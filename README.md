@@ -51,11 +51,12 @@ The **Cookbook Web Application** is a modern single-page recipe platform that al
 
 Check out the live demo of the project hosted on Netlify:
 
-<a href="https://to-do-application-makedonkatochevska.netlify.app/" target="_blank">Live Demo</a>
+<a href="https://cookbook-js-makedonkatochevska.netlify.app/" target="_blank">Live Demo</a>
 
 Or see the pictures below for a quick preview of the page:
 
-<a href="https://i.imghippo.com/files/Xaiv5611QPw.png" target="_blank">To Do App</a>
+<a href="https://i.imghippo.com/files/SZj2858Xj.png" target="_blank">Tags Filter Page</a>
+<a href="https://i.imghippo.com/files/dFNe4383nOg.png" target="_blank">Recipe Page</a>
 
 ---
 
@@ -134,7 +135,9 @@ To run these exercises locally, follow these steps:
 
 ## Credits 📝
 
-This project was developed to showcase my skills in **JavaScript**, **CSS**, and **HTML**. It demonstrates my ability to handle **DOM manipulation**, **event handling**
+This project was developed to demonstrate the usage of **JavaScript**, **CSS**, and **HTML**. The application showcases my ability to build a dynamic **single-page application (SPA)** that interacts with the DOM, implements hash-based routing, and allows users to search and filter through recipes.
+
+- **Recipe Data**: This project uses a mock dataset for recipe information, including title, ingredients, instructions, and nutrition values.
 
 ---
 
