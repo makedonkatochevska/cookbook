@@ -56,6 +56,7 @@ Check out the live demo of the project hosted on Netlify:
 Or see the pictures below for a quick preview of the page:
 
 <a href="https://i.imghippo.com/files/SZj2858Xj.png" target="_blank">Tags Filter Page</a>
+<br>
 <a href="https://i.imghippo.com/files/dFNe4383nOg.png" target="_blank">Recipe Page</a>
 
 ---
