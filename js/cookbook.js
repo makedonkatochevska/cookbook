@@ -2,6 +2,7 @@ const cardContainer = document.querySelector("#card-container");
 const fullRecipeContainer = document.querySelector("#full-recipe-container");
 const searchContainer = document.querySelector("#search-container");
 const tagContainer = document.querySelector("#tag-container");
+const filterContainer = document.getElementById("filters");
 
 //header click event
 document
@@ -15,6 +16,14 @@ function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+//Function to format time
+function formatTime(seconds) {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+
+  return `${hours}h ${minutes}m`;
 }
 
 //Function to create new card
@@ -99,6 +108,59 @@ function renderRecipe() {
 
   contents.classList.add("card-content");
 
+  //Prep time
+  if (recipe.preptime > 0) {
+    const prepTimeTitle = document.createElement("h4");
+    prepTimeTitle.textContent = "PrepTime";
+    const prepTimeParagraph = document.createElement("p");
+    prepTimeParagraph.textContent = `Prep Time: ${formatTime(recipe.preptime)}`;
+    contents.append(prepTimeTitle, prepTimeParagraph);
+  }
+
+  //Wait Time
+  if (recipe.waittime > 0) {
+    const waitTimeTitle = document.createElement("h4");
+    waitTimeTitle.textContent = "Wait Time";
+    const waitTimeParagraph = document.createElement("p");
+    waitTimeParagraph.textContent = `Wait Time: ${formatTime(recipe.waittime)}`;
+    contents.append(waitTimeTitle, waitTimeParagraph);
+  }
+
+  //Instructions
+  const p = document.createElement("p");
+  p.innerText = recipe.instructions;
+  const h4Instructions = document.createElement("h4");
+  h4Instructions.innerText = "Instructions";
+
+  //Nutrition
+  const nutritionTitle = document.createElement("h4");
+  nutritionTitle.textContent = "Nutrition";
+  const nutritionTable = document.createElement("table");
+  nutritionTable.innerHTML = `
+  <thead>
+   <tr>
+    <th>Calories</th>
+    <th>Fat</th>
+    <th>Saturate Fats</th>
+    <th>Carbs</th>
+    <th>Fiber</th>
+    <th>Sugar</th>
+    <th>Protein</th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>${recipe.calories}</td>
+    <td>${recipe.fat}</td>
+    <td>${recipe.satfat}</td>
+    <td>${recipe.carbs}</td>
+    <td>${recipe.fiber}</td>
+    <td>${recipe.sugar}</td>
+    <td>${recipe.protein}</td>
+   </tr>
+  </tbody>
+  `;
+
   //Ingredient List
   const ingredientTitle = document.createElement("h4");
   ingredientTitle.textContent = "Ingredients";
@@ -109,13 +171,15 @@ function renderRecipe() {
     ingredientList.append(listItem);
   });
 
-  const p = document.createElement("p");
-  p.innerText = recipe.instructions;
-  const h4Instructions = document.createElement("h4");
-  h4Instructions.innerText = "Instructions";
-
   //append
-  contents.append(h4Instructions, p, ingredientTitle, ingredientList);
+  contents.append(
+    h4Instructions,
+    p,
+    nutritionTitle,
+    nutritionTable,
+    ingredientTitle,
+    ingredientList
+  );
 
   card.classList.add("card");
   card.appendChild(cimage);
@@ -143,7 +207,55 @@ function drawRecipe() {
   });
 }
 
-// Function to handle the route
+//Function to render search form
+function renderSearchForm() {
+  //search container
+  filterContainer.style.display = "flex";
+
+  //input
+  const searchInput = document.createElement("input");
+  searchInput.type = "text";
+  searchInput.placeholder = "Search for a recipe...";
+  searchInput.classList.add("search-input");
+
+  //search btn
+  const searchBtn = document.createElement("button");
+  searchBtn.innerText = "Search";
+  searchBtn.style.width = "150px";
+  searchBtn.classList.add("waves-effect", "waves-light", "btn", "orange");
+
+  //event for the search btn
+  searchBtn.addEventListener("click", () => {
+    const searchedValue = searchInput.value.toLowerCase().trim();
+
+    console.log(searchedValue);
+
+    location.hash = "search/" + searchedValue;
+
+    searchInput.value = "";
+  });
+
+  filterContainer.append(searchInput, searchBtn);
+}
+
+//Search Function
+function searchFunction(searchedTerm) {
+  searchContainer.innerHTML = "";
+
+  const filteredByTags = recipeData.filter(
+    (recipe) =>
+      recipe.tags.some((tag) => tag.includes(searchedTerm)) ||
+      recipe.name.includes(searchedTerm) ||
+      recipe.instructions.includes(searchedTerm)
+  );
+
+  filteredByTags.forEach((filteredRecipe) => {
+    const filteredCard = createCard(filteredRecipe);
+    searchContainer.append(filteredCard);
+  });
+}
+
+//Function to handle the route
 function handleRoute(e) {
   e.preventDefault();
   if (location.hash === "") {
@@ -151,23 +263,34 @@ function handleRoute(e) {
     cardContainer.style.display = "flex";
     fullRecipeContainer.style.display = "none";
     tagContainer.style.display = "none";
+    searchContainer.style.display = "none";
   } else if (location.hash.includes("tags")) {
     const tag = location.hash.split("/")[1];
     filterRecipeByTag(tag);
-
     cardContainer.style.display = "none";
     fullRecipeContainer.style.display = "none";
     tagContainer.style.display = "flex";
+    searchContainer.style.display = "none";
+  } else if (location.hash.includes("search")) {
+    const searchedTag = location.hash.split("/")[1];
+    searchFunction(searchedTag);
+    cardContainer.style.display = "none";
+    fullRecipeContainer.style.display = "none";
+    tagContainer.style.display = "none";
+    searchContainer.style.display = "flex";
   } else {
     renderRecipe();
     cardContainer.style.display = "none";
     tagContainer.style.display = "none";
-
+    searchContainer.style.display = "none";
     fullRecipeContainer.style.display = "flex";
   }
 }
 
 //------on load events--------
 
-window.addEventListener("load", handleRoute);
+window.addEventListener("load", (e) => {
+  handleRoute(e);
+  renderSearchForm();
+});
 window.addEventListener("hashchange", handleRoute);

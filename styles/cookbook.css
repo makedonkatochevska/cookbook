@@ -128,5 +128,8 @@ header i.material-icons {
   display: none;
 }
 
-/*#search-container {
-}*/
+/* table style */
+td,
+th {
+  text-align: center;
+}
